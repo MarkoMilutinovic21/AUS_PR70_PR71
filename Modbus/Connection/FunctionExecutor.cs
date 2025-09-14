@@ -8,6 +8,7 @@ using System.Threading;
 
 namespace Modbus.Connection
 {
+	/// Test Push
     /// <summary>
     /// Class containing logic for sending modbus requests and receiving point values. 
     /// </summary>
