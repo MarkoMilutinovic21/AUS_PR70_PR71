@@ -55,9 +55,70 @@ namespace ProcessingModule
         /// Acquisitor thread logic.
         /// </summary>
 		private void Acquisition_DoWork()
-		{
-            //TO DO: IMPLEMENT
+        {
+            while (true)
+            {
+                // Čeka signal (npr. timer ili neki drugi thread) da krene novi ciklus akvizicije.
+                // Na ovaj način thread ne radi "busy loop", nego čeka da ga neko probudi.
+                acquisitionTrigger.WaitOne();
+
+                // Uzimamo sve konfiguracione stavke koje treba periodično očitavati.
+                var items = this.configuration.GetConfigurationItems();
+
+                foreach (var item in items)
+                {
+                    // Ako je prošlo dovoljno ciklusa (SecondsPassedSinceLastPoll >= AcquisitionInterval),
+                    // vreme je da očitamo podatke za ovu stavku.
+                    if (item.SecondsPassedSinceLastPoll >= item.AcquisitionInterval)
+                    {
+                        try
+                        {
+                            // Šalje se komanda za čitanje registra sa uređaja.
+                            // Parametri dolaze iz konfiguracije i same stavke (adresa, broj registara...).
+                            this.processingManager.ExecuteReadCommand(
+                                item,                                    // Konfiguraciona stavka (IConfigItem)
+                                this.configuration.GetTransactionId(),   // ID transakcije
+                                this.configuration.UnitAddress,          // Adresa uređaja
+                                item.StartAddress,                       // Start adresa registra
+                                item.NumberOfRegisters                   // Broj registara za čitanje
+                            );
+                        }
+                        catch (Exception)
+                        {
+                            // Ako dođe do greške pri čitanju, za sada samo ispišemo poruku u konzolu.
+                            // (ovde se može ubaciti logovanje ili obaveštavanje stateUpdater-a).
+                            Console.WriteLine("Error executing read command.");
+                        }
+
+                        // Resetujemo brojač jer smo upravo izvršili akviziciju.
+                        item.SecondsPassedSinceLastPoll = 0;
+                    }
+                    else
+                    {
+                        // Ako još nije vreme za akviziciju, samo povećavamo brojač.
+                        item.SecondsPassedSinceLastPoll++;
+                    }
+                }
+            }
         }
+
+
+
+
+        //TO DO: IMPLEMENT za ovo iznad instrukcije 
+        // petlja kroz konfiguraciju
+        // items = this.configuration.getconfigurationitema()
+        // for tiem in items
+        // 
+        // if item.brojac == item.aquisition interval
+        //aquisitiontrigger wait one()
+        // proccessingManager.executereadcommand(i, 
+        // this.configuration.gettransacionId();, this.configuration.unitAddress,
+        // i.startAddress, i.numberOfRegisters);
+        // items.brojac = 0;
+        //}
+        // item brojac++;
+
 
         #endregion Private Methods
 
