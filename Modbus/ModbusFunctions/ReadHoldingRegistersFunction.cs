@@ -31,8 +31,21 @@ namespace Modbus.ModbusFunctions
         /// <inheritdoc />
         public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
         {
-            //TO DO: IMPLEMENT
-            throw new NotImplementedException();
+            ModbusReadCommandParameters paranCon = this.CommandParameters as ModbusReadCommandParameters;
+            Dictionary<Tuple<PointType, ushort>, ushort> d = new Dictionary<Tuple<PointType, ushort>, ushort>();
+
+                ushort address = ((ModbusReadCommandParameters)CommandParameters).StartAddress;
+
+                for(int i = 0; i < response[8] / 2; i++)
+                {
+                    byte byte1 = response[8 + 1 + i*2];
+                    byte byte2 = response[8 + 2 + i*2];
+                    ushort value1 = BitConverter.ToUInt16(new byte[2] { byte2, byte1 }, 0);
+
+                    d.Add(new Tuple<PointType, ushort>(PointType.ANALOG_OUTPUT, address), value1);
+                    address++;
+                }
+            return d;
         }
     }
 }

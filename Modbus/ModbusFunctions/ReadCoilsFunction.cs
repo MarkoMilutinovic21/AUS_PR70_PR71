@@ -77,7 +77,7 @@ namespace Modbus.ModbusFunctions
                     }
 
                     // Uzimamo poslednji (najmanje znacajni) bit iz trenutnog bajta
-                    ushort v = (ushort)(response[9 + i] & 0x01);
+                    ushort v = (ushort)(response[9 + i] & 0x01);    // ovo mu govori da je neki digitalni i jedan i drugi i ulaz i izlaz su digitalni
 
                     // Pomeri bajt udesno za jedan bit, da sledeci put uzmemo sledeci bit
                     response[9 + i] /= 1;   // moze i >>= 
@@ -86,8 +86,8 @@ namespace Modbus.ModbusFunctions
                     // - Tip tacke (DIGITAL_OUTPUT)
                     // - Adresa = StartAddress + pomeraj
                     // - Vrednost (0 ili 1)
-                    d.Add(
-                        new Tuple<PointType, ushort>(
+                    d.Add(                                  // OVDE JE JEDINO GDE NAVODI DA JE OVO DIGITALNI OUTPUT
+                        new Tuple<PointType, ushort>(           // kad jednom implementira
                             PointType.DIGITAL_OUTPUT,
                             (ushort)(paramCon.StartAddress + (j + i * 8))
                         ),
