@@ -1,5 +1,4 @@
-﻿// ReadHoldingRegistersFunction.cs - Dopunjeno sa PackRequest metodom
-using Common;
+﻿using Common;
 using Modbus.FunctionParameters;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,6 @@ namespace Modbus.ModbusFunctions
         public override byte[] PackRequest()
         {
             ModbusReadCommandParameters readParams = CommandParameters as ModbusReadCommandParameters;
-
             byte[] request = new byte[12];
 
             // Transaction ID (2 bajta)

@@ -23,14 +23,14 @@ namespace Modbus.ModbusFunctions
         }
 
         /// <inheritdoc/>
-        public override byte[] PackRequest()
+        public override byte[] PackRequest() // modelujemo kako ce request da izgleda samom serveru
         {
             ModbusReadCommandParameters paranCon = this.CommandParameters as ModbusReadCommandParameters;
 
             byte[] request = new byte[12];
 
             Buffer.BlockCopy(
-                    (Array)BitConverter.GetBytes(               // pretvara short u niz od 2 bajta
+                    (Array)BitConverter.GetBytes(               // pretvara short u niz od 2 bajta, zato sto je slika 2 bytes paket
                         IPAddress.HostToNetworkOrder(           // little u big endian
                                 (short)paranCon.TransactionId)  // sta kopiramo
                     ),
@@ -52,7 +52,7 @@ namespace Modbus.ModbusFunctions
         }
 
         /// <inheritdoc />
-        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
+        public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response) 
         {
             // Preuzimamo parametre komande (StartAddress, Quantity, itd.)
             ModbusReadCommandParameters paramCon = this.CommandParameters as ModbusReadCommandParameters;
@@ -62,7 +62,7 @@ namespace Modbus.ModbusFunctions
             //   vrednost = stanje (0 ili 1)
             Dictionary<Tuple<PointType, ushort>, ushort> d = new Dictionary<Tuple<PointType, ushort>, ushort>();
 
-            // response[8] = broj bajtova koji sadrže podatke (koliko sledecih bajtova ima bitove za vrednosti)
+            // response[8] = broj bajtova koji sadrže podatke (koliko sledecih bajtova ima bitove za vrednosti) npr q = 10, 10 podataka
             int q = response[8];
 
             // Svaki bajt sadrži 8 digitalnih vrednosti (bitova)
@@ -77,7 +77,7 @@ namespace Modbus.ModbusFunctions
                     }
 
                     // Uzimamo poslednji (najmanje znacajni) bit iz trenutnog bajta
-                    ushort v = (ushort)(response[9 + i] & 0x01);    // ovo mu govori da je neki digitalni i jedan i drugi i ulaz i izlaz su digitalni
+                    ushort v = (ushort)(response[9 + i] & 0x01);    // 1 bajt: a1 a2 a3 a4 b1 b2 b3 b4 --> ovo uzima b4
 
                     // Pomeri bajt udesno za jedan bit, da sledeci put uzmemo sledeci bit
                     response[9 + i] /= 1;   // moze i >>= 
