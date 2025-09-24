@@ -272,7 +272,6 @@ namespace dCom.Configuration
             int temp;
             double doubleTemp;
 
-            // Parse basic parameters (existing logic)
             Int32.TryParse(configurationParameters[1], out temp);
             NumberOfRegisters = (ushort)temp;
             Int32.TryParse(configurationParameters[2], out temp);
@@ -288,7 +287,6 @@ namespace dCom.Configuration
             ProcessingType = configurationParameters[7];
             Description = configurationParameters[8].TrimStart('@');
 
-            // Parse acquisition interval
             if (configurationParameters[9].Equals("#"))
             {
                 AcquisitionInterval = 1;
@@ -299,84 +297,103 @@ namespace dCom.Configuration
                 AcquisitionInterval = temp;
             }
 
-            // Parse new parameters based on point type
-            if (RegistryType == PointType.ANALOG_INPUT || RegistryType == PointType.ANALOG_OUTPUT)
+            // Dodani novi parametri
+            if (configurationParameters.Count > 10)
             {
-                // Analog points: A B EGU_Min EGU_Max HighAlarm LowAlarm
-                if (configurationParameters.Count >= 16)
+                // Parametar 10 - A (ScaleFactor)
+                if (configurationParameters[10].Equals("#"))
                 {
-                    // A (Scaling Factor) - parameter 10
-                    double.TryParse(configurationParameters[10], out doubleTemp);
-                    ScaleFactor = doubleTemp != 0 ? doubleTemp : 1.0; // Default to 1 if not specified or 0
+                    ScaleFactor = 1.0;
+                }
+                else
+                {
+                    Double.TryParse(configurationParameters[10], out doubleTemp);
+                    ScaleFactor = doubleTemp != 0 ? doubleTemp : 1.0;
+                }
 
-                    // B (Deviation) - parameter 11
-                    double.TryParse(configurationParameters[11], out doubleTemp);
-                    Deviation = doubleTemp; // Default to 0
+                // Parametar 11 - B (Deviation)
+                if (configurationParameters[11].Equals("#"))
+                {
+                    Deviation = 0.0;
+                }
+                else
+                {
+                    Double.TryParse(configurationParameters[11], out doubleTemp);
+                    Deviation = doubleTemp;
+                }
 
-                    // EGU_Min - parameter 12
-                    double.TryParse(configurationParameters[12], out doubleTemp);
+                // Parametar 12 - EGU_Min
+                if (configurationParameters[12].Equals("#"))
+                {
+                    EGU_Min = 0.0;
+                }
+                else
+                {
+                    Double.TryParse(configurationParameters[12], out doubleTemp);
                     EGU_Min = doubleTemp;
+                }
 
-                    // EGU_Max - parameter 13
-                    double.TryParse(configurationParameters[13], out doubleTemp);
+                // Parametar 13 - EGU_Max  
+                if (configurationParameters[13].Equals("#"))
+                {
+                    EGU_Max = RegistryType == PointType.DIGITAL_OUTPUT ? 1.0 : 65535.0;
+                }
+                else
+                {
+                    Double.TryParse(configurationParameters[13], out doubleTemp);
                     EGU_Max = doubleTemp;
+                }
 
-                    // HighAlarm - parameter 14
-                    double.TryParse(configurationParameters[14], out doubleTemp);
+                // Parametar 14 - HighLimit
+                if (configurationParameters[14].Equals("#"))
+                {
+                    HighLimit = 0.0;
+                }
+                else
+                {
+                    Double.TryParse(configurationParameters[14], out doubleTemp);
                     HighLimit = doubleTemp;
+                }
 
-                    // LowAlarm - parameter 15
-                    double.TryParse(configurationParameters[15], out doubleTemp);
+                // Parametar 15 - LowLimit
+                if (configurationParameters[15].Equals("#"))
+                {
+                    LowLimit = 0.0;
+                }
+                else
+                {
+                    Double.TryParse(configurationParameters[15], out doubleTemp);
                     LowLimit = doubleTemp;
                 }
-                else
-                {
-                    // Set defaults for analog points if parameters missing
-                    ScaleFactor = 1.0;
-                    Deviation = 0.0;
-                    EGU_Min = 0.0;
-                    EGU_Max = 65535.0;
-                    HighLimit = 60000.0;
-                    LowLimit = 1000.0;
-                }
 
-                // AbnormalValue not applicable for analog points
-                AbnormalValue = 0;
-            }
-            else if (RegistryType == PointType.DIGITAL_INPUT || RegistryType == PointType.DIGITAL_OUTPUT)
-            {
-                // Digital points: AbnormalValue
-                if (configurationParameters.Count >= 11)
+                // Parametar 16 - AbnormalValue
+                if (configurationParameters.Count > 16)
                 {
-                    // AbnormalValue - parameter 10
-                    Int32.TryParse(configurationParameters[10], out temp);
-                    AbnormalValue = (ushort)temp;
+                    if (configurationParameters[16].Equals("#"))
+                    {
+                        AbnormalValue = 1;
+                    }
+                    else
+                    {
+                        Int32.TryParse(configurationParameters[16], out temp);
+                        AbnormalValue = (ushort)temp;
+                    }
                 }
                 else
                 {
-                    // Default abnormal value for digital points
-                    // Specification says nominal state is OFF (0), so abnormal is ON (1)
                     AbnormalValue = 1;
                 }
-
-                // Set defaults for unused analog parameters
-                ScaleFactor = 1.0;
-                Deviation = 0.0;
-                EGU_Min = 0.0;
-                EGU_Max = 1.0;
-                HighLimit = 0.0;
-                LowLimit = 0.0;
             }
             else
             {
-                // Other point types - set defaults
+                // Default vrednosti ako nema dodatnih parametara
                 ScaleFactor = 1.0;
                 Deviation = 0.0;
                 EGU_Min = 0.0;
-                EGU_Max = 65535.0;
-                HighLimit = 60000.0;
-                LowLimit = 1000.0;
-                AbnormalValue = 0;
+                EGU_Max = RegistryType == PointType.DIGITAL_OUTPUT ? 1.0 : 65535.0;
+                HighLimit = 0.0;
+                LowLimit = 0.0;
+                AbnormalValue = 1;
             }
         }
 

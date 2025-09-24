@@ -1,11 +1,10 @@
 STA 55
-TCP 503
+TCP 503  
 DBC 1
-
-DO_REG 1 3000 0 0 1 0 DO @Start_Signal 2 0
-DO_REG 1 3001 0 0 1 0 DO @Motor_Mixer 2 1
-DO_REG 1 4000 0 0 1 0 DO @Valve_V1_Chocolate 2 1
-DO_REG 1 4001 0 0 1 0 DO @Valve_V2_Milk 2 1
-DO_REG 1 4002 0 0 1 0 DO @Valve_V3_Water 2 1
-DO_REG 1 4003 0 0 1 0 DO @Valve_V4_Drain 2 1
+DO_REG 1 3000 0 0 1 0 DO @Start_Signal 2 # # # # # # 1
+DO_REG 1 3001 0 0 1 0 DO @Motor_Mixer 2 # # # # # # 1
+DO_REG 1 4000 0 0 1 0 DO @Valve_V1_Chocolate 2 # # # # # # 1
+DO_REG 1 4001 0 0 1 0 DO @Valve_V2_Milk 2 # # # # # # 1
+DO_REG 1 4002 0 0 1 0 DO @Valve_V3_Water 2 # # # # # # 1
+DO_REG 1 4003 0 0 1 0 DO @Valve_V4_Drain 2 # # # # # # 1
 HR_INT 1 1000 0 0 65535 0 AO @Mixer_Contents_kg 3 1.0 0.0 0.0 400.0 350.0 50.0
