@@ -171,22 +171,28 @@ namespace ProcessingModule
         /// <summary>
         /// Handles the idle state - waiting for start signal.
         /// </summary>
+        /// <summary>
+        /// Handles the idle state - waiting for start signal.
+        /// </summary>
         private void HandleIdleState(int startSignal)
         {
             if (startSignal == 1 && mixerContents == 0)
             {
+                // Close valves
+                SetDigitalPoint(VALVE_V1_ADDRESS, 0);
+                SetDigitalPoint(VALVE_V2_ADDRESS, 0);
+                SetDigitalPoint(VALVE_V3_ADDRESS, 0);
+                SetDigitalPoint(VALVE_V4_ADDRESS, 0);
+                SetDigitalPoint(MOTOR_ADDRESS, 0);
+
+                Thread.Sleep(500);
+
                 // Start the ice cream making process
                 currentState = MixerState.FillingChocolate;
                 stateTimer = 0;
 
                 // Open chocolate valve
                 SetDigitalPoint(VALVE_V1_ADDRESS, 1);
-
-                // Ensure all other valves are closed and motor is off
-                SetDigitalPoint(VALVE_V2_ADDRESS, 0);
-                SetDigitalPoint(VALVE_V3_ADDRESS, 0);
-                SetDigitalPoint(VALVE_V4_ADDRESS, 0);
-                SetDigitalPoint(MOTOR_ADDRESS, 0);
             }
         }
 
@@ -195,17 +201,24 @@ namespace ProcessingModule
         /// </summary>
         private void HandleFillingChocolateState()
         {
-            stateTimer++;
+            // Prvo proveri da li je V1 stvarno otvoren
+            var v1State = GetDigitalPointValue(VALVE_V1_ADDRESS);
+            if (v1State != 1)
+            {
+                // Ako V1 nije otvoren, pokušaj ponovo
+                SetDigitalPoint(VALVE_V1_ADDRESS, 1);
+                return; 
+            }
+            
 
-            // Add chocolate to mixer
+            stateTimer++;
             mixerContents += CHOCOLATE_FLOW_RATE;
 
-            // Check if we've added enough chocolate
             if (mixerContents >= TARGET_CHOCOLATE)
             {
-                mixerContents = TARGET_CHOCOLATE; // Cap at target
+                mixerContents = TARGET_CHOCOLATE;
 
-                // Close chocolate valve, open milk valve
+                // Zatvori V1, otvori V2
                 SetDigitalPoint(VALVE_V1_ADDRESS, 0);
                 SetDigitalPoint(VALVE_V2_ADDRESS, 1);
 
@@ -380,6 +393,9 @@ namespace ProcessingModule
                         configuration.UnitAddress,
                         address,
                         value);
+
+                    // Dodaj kratku pauzu između komandi
+                    Thread.Sleep(100);
                 }
             }
             catch (Exception ex)

@@ -1,8 +1,7 @@
 STA 55
-TCP 503  
-DBC 1
-DO_REG 1 3000 0 0 1 0 DO @Start_Signal 2 # # # # # # 1
-DO_REG 1 3001 0 0 1 0 DO @Motor_Mixer 2 # # # # # # 1
+TCP 503
+
+DO_REG 2 3000 0 0 1 0 DO @Start_Signal 2 # # # # # # 1
 DO_REG 1 4000 0 0 1 0 DO @Valve_V1_Chocolate 2 # # # # # # 1
 DO_REG 1 4001 0 0 1 0 DO @Valve_V2_Milk 2 # # # # # # 1
 DO_REG 1 4002 0 0 1 0 DO @Valve_V3_Water 2 # # # # # # 1

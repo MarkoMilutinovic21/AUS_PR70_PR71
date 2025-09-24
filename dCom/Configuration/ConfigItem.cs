@@ -336,7 +336,7 @@ namespace dCom.Configuration
                 // Parametar 13 - EGU_Max  
                 if (configurationParameters[13].Equals("#"))
                 {
-                    EGU_Max = RegistryType == PointType.DIGITAL_OUTPUT ? 1.0 : 65535.0;
+                    EGU_Max = 1.0; // za digitalne
                 }
                 else
                 {
@@ -390,7 +390,7 @@ namespace dCom.Configuration
                 ScaleFactor = 1.0;
                 Deviation = 0.0;
                 EGU_Min = 0.0;
-                EGU_Max = RegistryType == PointType.DIGITAL_OUTPUT ? 1.0 : 65535.0;
+                EGU_Max = RegistryType == PointType.DIGITAL_OUTPUT ? 1.0 : 400;
                 HighLimit = 0.0;
                 LowLimit = 0.0;
                 AbnormalValue = 1;
