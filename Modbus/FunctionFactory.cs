@@ -5,40 +5,40 @@ using Modbus.ModbusFunctions;
 namespace Modbus
 {
     /// <summary>
-    /// Class containing logic for creating modbus functions.
+    /// Factory class for creating modbus functions based on command parameters.
     /// </summary>
-    public class FunctionFactory
-	{
+    public static class FunctionFactory
+    {
         /// <summary>
-        /// Creates a modbus fonction with the forwarded parameters.
+        /// Creates a modbus function based on the provided command parameters.
         /// </summary>
         /// <param name="commandParameters">The modbus command parameters.</param>
-        /// <returns></returns>
-		public static IModbusFunction CreateModbusFunction(ModbusCommandParameters commandParameters)
-		{
-			switch ((ModbusFunctionCode)commandParameters.FunctionCode)
-			{
-				case ModbusFunctionCode.READ_COILS:
-					return new ReadCoilsFunction(commandParameters);
+        /// <returns>The appropriate modbus function implementation.</returns>
+        public static IModbusFunction CreateModbusFunction(ModbusCommandParameters commandParameters)
+        {
+            switch (commandParameters.FunctionCode)
+            {
+                case (byte)ModbusFunctionCode.READ_COILS:
+                    return new ReadCoilsFunction(commandParameters);
 
-				case ModbusFunctionCode.READ_DISCRETE_INPUTS:
-					return new ReadDiscreteInputsFunction(commandParameters);
+                case (byte)ModbusFunctionCode.READ_DISCRETE_INPUTS:
+                    return new ReadDiscreteInputsFunction(commandParameters);
 
-				case ModbusFunctionCode.READ_INPUT_REGISTERS:
-					return new ReadInputRegistersFunction(commandParameters);
+                case (byte)ModbusFunctionCode.READ_HOLDING_REGISTERS:
+                    return new ReadHoldingRegistersFunction(commandParameters);
 
-				case ModbusFunctionCode.READ_HOLDING_REGISTERS:
-					return new ReadHoldingRegistersFunction(commandParameters);
+                case (byte)ModbusFunctionCode.READ_INPUT_REGISTERS:
+                    return new ReadInputRegistersFunction(commandParameters);
 
-				case ModbusFunctionCode.WRITE_SINGLE_COIL:
-					return new WriteSingleCoilFunction(commandParameters);
+                case (byte)ModbusFunctionCode.WRITE_SINGLE_COIL:
+                    return new WriteSingleCoilFunction(commandParameters);
 
-				case ModbusFunctionCode.WRITE_SINGLE_REGISTER:
-					return new WriteSingleRegisterFunction(commandParameters);
+                case (byte)ModbusFunctionCode.WRITE_SINGLE_REGISTER:
+                    return new WriteSingleRegisterFunction(commandParameters);
 
-				default:
-					return null;
-			}
-		}
-	}
+                default:
+                    throw new System.ArgumentException($"Unsupported function code: {commandParameters.FunctionCode}");
+            }
+        }
+    }
 }
