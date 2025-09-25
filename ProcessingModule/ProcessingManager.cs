@@ -187,6 +187,8 @@ namespace ProcessingModule
         /// </summary>
         /// <param name="point">The digital point</param>
         /// <param name="newValue">The new value.</param>
+        /// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
         private void ProcessDigitalPoint(IDigitalPoint point, ushort newValue)
         {
             if (point == null) return;
@@ -214,6 +216,7 @@ namespace ProcessingModule
         /// </summary>
         /// <param name="point">The analog point.</param>
         /// <param name="newValue">The new value.</param>
+        /// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
         private void ProcessAnalogPoint(IAnalogPoint point, ushort newValue)
         {
             if (point == null) return;

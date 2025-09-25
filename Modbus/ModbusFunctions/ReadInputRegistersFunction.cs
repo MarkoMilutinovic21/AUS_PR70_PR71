@@ -24,14 +24,14 @@ namespace Modbus.ModbusFunctions
         /// <inheritdoc />
         public override byte[] PackRequest()
         {
-            // Ovo za nasu specifikaciju projekta nije potrebno
+            // Ovo za nasu specifikaciju projekta nije potrebno, ne treba nam analog input
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         public override Dictionary<Tuple<PointType, ushort>, ushort> ParseResponse(byte[] response)
         {
-            // Ovo za nasu specifikaciju projekta nije potrebno
+            // Ovo za nasu specifikaciju projekta nije potrebno, ne treba nam analog input
             throw new NotImplementedException();
         }
     }

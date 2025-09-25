@@ -207,9 +207,9 @@ namespace ProcessingModule
             {
                 // Ako V1 nije otvoren, pokušaj ponovo
                 SetDigitalPoint(VALVE_V1_ADDRESS, 1);
-                return; 
+                return;
             }
-            
+
 
             stateTimer++;
             mixerContents += CHOCOLATE_FLOW_RATE;
